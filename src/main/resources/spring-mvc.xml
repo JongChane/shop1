@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--  /shop1/src/main/resources/spring-mvc.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans.xsd
+ http://www.springframework.org/schema/context
+ http://www.springframework.org/schema/context/spring-context.xsd
+ http://www.springframework.org/schema/aop
+ http://www.springframework.org/schema/aop/spring-aop.xsd
+ http://www.springframework.org/schema/mvc
+ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+ <!-- js, css, html : 웹에서 기본 제공되는 파일은 spring 에서 제외시킴.  -->
+ <mvc:default-servlet-handler/>
+ <!-- @Component,@Controller, @Service, @Repository => 객체화 -->
+ <context:component-scan base-package="controller,logic,dao" />
+ <!-- mvc 관련 어노테이션 적용  -->
+ <mvc:annotation-driven />
+ <!-- view 결정자 : jsp 페이지의 위치 지정
+     item/list :   /WEB-INF/view/item/list.jsp => itemList 데이터 전달
+ -->
+ <bean id="viewResolver"
+    class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="viewClass">
+      <value>org.springframework.web.servlet.view.JstlView</value>
+    </property>
+    <property name="prefix"><value>/WEB-INF/view/</value></property>
+    <property name="suffix"><value>.jsp</value></property>
+ </bean> 
+</beans>
