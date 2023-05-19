@@ -13,11 +13,18 @@
 <title>상품등록</title>
 </head>
 <body>
-<form:form modelAttribute="item" action="register" 
+<%-- http://localhost:8080/shop1/item/create => get 방식 요청 : 화면출력
+                                     post 방식 요청 : 파일업로드+db에 데이터 저장
+   <form:form .... /> => enctype="multipart/form-data" 인 경우
+                           method="post"로 설정됨 --%>
+<form:form modelAttribute="item" action="create" 
            enctype="multipart/form-data">
 <h2>상품등록</h2>
 <table>
 <tr><td>상품명</td>
+<%-- <form:input path="name" />=> 
+     <input  type="text" name="name" id="name" value="${item.name}"> 
+--%>
     <td><form:input path="name" /></td>
     <td><font color="red"><form:errors path="name"/></font></td></tr>
 <tr><td>상품가격</td>

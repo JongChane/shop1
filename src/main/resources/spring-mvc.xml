@@ -31,4 +31,9 @@
     <property name="prefix"><value>/WEB-INF/view/</value></property>
     <property name="suffix"><value>.jsp</value></property>
  </bean> 
+ <!-- 파일 업로드 설정 -->
+ <bean id="multipartResolver" class=
+    "org.springframework.web.multipart.commons.CommonsMultipartResolver"
+    p:maxUploadSize="104854600" p:maxInMemorySize="10485460" />
+ 
 </beans>

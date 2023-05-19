@@ -45,7 +45,7 @@
 	<logger name="jdbc.resultset"      level="OFF" /> <!-- JDBC 호출 정보 -->
 	<logger name="jdbc.connection"     level="INFO" /> <!-- 연결/종료 -->
 
-	<root level="INFO">
+	<root level="ERROR">
 		<appender-ref ref="console" /> <!-- 콘솔 설정 추가 -->
 		<appender-ref ref="rolling" /> <!-- 파일 설정 추가 -->
 	</root>

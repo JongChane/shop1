@@ -3,6 +3,7 @@ package logic;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +17,7 @@ public class Item {
 	@NotEmpty(message="상품설명을 입력하세요")
 	private String description;
 	private String pictureUrl;
-	private MultipartFile picture;
+	private MultipartFile picture; //picture file에서 업로드된 파일의 내용 
 	
 	//setter,getter, toString
 	public int getId() {
