@@ -7,3 +7,4 @@ error.input.check=입력 정보를 확인하세요
 error.duplicate.user=중복된 아이디 입니다.
 error.login.input=로그인 정보 입력오류 입니다.
 error.login.id=아이디를 확인하세요
+error.login.password=비밀번호를 확인하세요
