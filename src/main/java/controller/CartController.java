@@ -7,10 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import exception.CartEmptyException;
+import exception.LoginException;
 import logic.Cart;
 import logic.Item;
 import logic.ItemSet;
 import logic.ShopService;
+import logic.User;
 
 @Controller
 @RequestMapping("cart")
@@ -64,5 +67,30 @@ public class CartController {
 		mav.addObject("message",delItem.getItem().getName()+"가(이) 삭제되었습니다.");
 		mav.addObject("cart",cart);
 		return mav;
+	}
+	/*
+	 * 주문 전 확인 페이지 
+	 * 1. 장바구니에 상품 존재해야 함
+	 *     상품이 없는 경우 : CartEmptyException 예외 발생
+	 * 2. 로그인 된 상태여야 함.
+	 *     로그아웃 상태 : LoginException 예외 발생
+	 *       - exception.LoginException 예외클래스 생성.
+	 *       - 예외 발생시 exception.jsp로 페이지 이동 
+	 */
+	@RequestMapping("checkout")
+	public String checkout(HttpSession session) {
+		Cart cart = (Cart)session.getAttribute("CART");
+	//cart == null : session에 CART 속성이 없는 경우
+	//cart.getItemSetList().size() : CART 속성은 존재. CART 내부에 상품정보가 없는 경우
+		if(cart == null || cart.getItemSetList().size() == 0) { //=>주문상품이 없음
+			//throw : 강제 예외 발생
+			throw new CartEmptyException("장바구니에 상품이 없습니다.","../item/list");
+		}
+		User loginUser = (User)session.getAttribute("loginUser");
+		if(loginUser == null) {
+			throw new LoginException("로그인하세요","../item/list");
+		}
+		return null; //view 의 이름 리턴. null인 경우 url과 같은이름을 호출
+		             //  /WEB-INF/view/cart/checkout.jsp
 	}
 }

@@ -1,0 +1,9 @@
+# /shop1/src/main/resources/messages.txt =>
+# /shop1/src/main/resources/messages.properties로 붙여 넣기 
+typeMismatch.birthday=생년월일은 YYYY-MM-DD 형식으로 입력해 주세요
+
+error.input.user=회원가입 정보 입력오류 입니다.
+error.input.check=입력 정보를 확인하세요
+error.duplicate.user=중복된 아이디 입니다.
+error.login.input=로그인 정보 입력오류 입니다.
+error.login.id=아이디를 확인하세요
