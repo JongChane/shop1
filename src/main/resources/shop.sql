@@ -9,15 +9,22 @@ create table useraccount (
    birthday datetime
 );
 
-CREATE TABLE sale (
-	saleid int PRIMARY KEY,
-	userid varchar(10) NOT NULL,
-	saledate datetime
+drop table sale;
+CREATE TABLE sale (  --주문정보
+	saleid int PRIMARY KEY,  
+	userid varchar(10) NOT NULL, 
+	saledate datetime,
+	foreign key (userid) references useraccount (userid)
 );
-CREATE TABLE saleitem (
+select * from sale
+drop table saleitem;
+CREATE TABLE saleitem (   --주문상품
 	saleid int ,
 	seq int ,
 	itemid int NOT NULL,
 	quantity int,
-	PRIMARY KEY (saleid, seq)
+	PRIMARY KEY (saleid, seq),
+	foreign key (saleid) references sale (saleid),
+	foreign key (itemid) references item (id)
 );
+select * from saleitem

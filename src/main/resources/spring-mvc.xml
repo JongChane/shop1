@@ -17,9 +17,11 @@
  <!-- js, css, html : 웹에서 기본 제공되는 파일은 spring 에서 제외시킴.  -->
  <mvc:default-servlet-handler/>
  <!-- @Component,@Controller, @Service, @Repository => 객체화 -->
- <context:component-scan base-package="controller,logic,dao" />
- <!-- mvc 관련 어노테이션 적용  -->
- <mvc:annotation-driven />
+ <context:component-scan base-package="controller,logic,dao,aop" />
+ 
+ <mvc:annotation-driven />  <!-- mvc 관련 어노테이션 적용  -->
+ <aop:aspectj-autoproxy /> <!-- AOP 관련 어노테이션 적용 -->
+   
  <!-- view 결정자 : jsp 페이지의 위치 지정
      item/list :   /WEB-INF/view/item/list.jsp => itemList 데이터 전달
  -->
