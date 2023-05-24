@@ -41,24 +41,28 @@
      text-decoration: none;
      font-weight: bold;
   }
+  .title { 
+     text-decoration: none;
+  }
 </style>
 </head>
 <%--
+   http://localhost:8080/shop1/user/mypage?userid=id명
    mypage 완성하기
    파라미터 : userid
    salelist : userid가 주문한 전체 Sale 객체 목록.(List)
    user     : userid에 해당하는 회원정보
  --%>
 <body>
-<table>
+<table class="w3-table-all">
   <tr><td id="tab1" class="tab">
-  <a href="javascript:disp_div('minfo','tab1')">회원정보</a></td>
+  <a href="javascript:disp_div('minfo','tab1')" class="title">회원정보</a></td>
    <c:if test="${param.userid != 'admin'}">
      <td id="tab2" class="tab">
-         <a href="javascript:disp_div('oinfo','tab2')">주문정보</a></td>
+         <a href="javascript:disp_div('oinfo','tab2')"  class="title">주문정보</a></td>
    </c:if></tr></table>
 <div id="oinfo" class="info" style="display:none; width:100%;">
-<table><tr><th>주문번호</th><th>주문일자</th><th>주문금액</th></tr>
+<table  class="w3-table-all"><tr><th>주문번호</th><th>주문일자</th><th>주문금액</th></tr>
 <c:forEach items="${salelist}" var="sale" varStatus="stat">
 <tr><td align="center">
 <a href="javascript:list_disp('saleLine${stat.index}')">${sale.saleid}</a></td>
@@ -68,7 +72,7 @@
 </td></tr>
 <tr id="saleLine${stat.index}" class="saleLine">
  <td colspan="3" align="center">
-   <table><tr><td>상품명</td><td>상품가격</td><td>주문수량</td><td>상품총액</td></tr>
+   <table  class="w3-table-all"><tr><td>상품명</td><td>상품가격</td><td>주문수량</td><td>상품총액</td></tr>
    <c:forEach items="${sale.itemList }" var="saleItem">
    <tr><td class="title">${saleItem.item.name}</td>
        <td><fmt:formatNumber value="${saleItem.item.price}" pattern="###,###"/>
@@ -79,7 +83,7 @@
    </c:forEach></table>
  </td></tr></c:forEach></table></div>
  <div id="minfo" class="info">
- <table>
+ <table  class="w3-table-all">
    <tr><td>아이디</td><td>${user.userid}</td></tr>
    <tr><td>이름</td><td>${user.username}</td></tr>   
    <tr><td>우편번호</td><td>${user.postcode}</td></tr>   

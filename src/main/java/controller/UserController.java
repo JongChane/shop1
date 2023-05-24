@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import logic.Sale;
 import logic.ShopService;
 import logic.User;
 
@@ -77,11 +80,20 @@ public class UserController {
 		//3. mypage로 페이지 이동 => 404 오류 발생 (임시)
 		if(user.getPassword().equals(dbUser.getPassword())) { //정상 로그인
 			session.setAttribute("loginUser", dbUser);
-			mav.setViewName("redirect:mypage");
+			mav.setViewName("redirect:mypage?userid="+user.getUserid());
 		}else {  
 			bresult.reject("error.login.password");
 			mav.getModel().putAll(bresult.getModel());
 		}		
 		return mav;
 	}
+	@RequestMapping("mypage")
+	public ModelAndView idCheckMypage(String userid,HttpSession session) {
+		ModelAndView mav = new ModelAndView();
+		User user = service.selectUserOne(userid);
+		List<Sale> salelist = service.salelist(userid);
+		mav.addObject("user", user); //회원정보데이터
+		mav.addObject("salelist", salelist);  //주문목록
+		return mav;
+	}	
 }
