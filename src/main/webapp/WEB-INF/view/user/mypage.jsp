@@ -9,12 +9,13 @@
 <title>mypage</title>
 <script type="text/javascript">
    $(function(){
-	   $("#minfo").show()
-	   $("#oinfo").hide()
-	   $(".saleLine").each(function(){
-		   $(this).hide()
+	   $("#minfo").show() //id=minfo인 태그 내용 보여줌 => 회원정보
+	   $("#oinfo").hide() //id=oinfo인 태그 내용 안보여줌 => 주문정보
+	   //class="saleLine" 모든 태그 => 주문상품조회부분
+	   $(".saleLine").each(function(){  
+		   $(this).hide()   //안보이도록함
 	   })
-	   $("#tab1").addClass("select")
+	   $("#tab1").addClass("select") //select class 속성 추가 
    })
    function disp_div(id,tab) {
 	   $(".info").each(function() {
@@ -26,7 +27,7 @@
 	   $("#"+id).show()
 	   $("#"+tab).addClass("select")
    }
-   function list_disp(id) {
+   function list_disp(id) {  //id=saleLine0,saleLine1....
 	   $("#"+id).toggle()  //현재 보이는 경우 => 안보이도록
 	                       //현재 안보이는 경우 => 보이도록
    }
@@ -94,10 +95,10 @@
  </table><br>
  <a href="update?userid=${user.userid}">[회원정보수정]</a>&nbsp;
  <a href="password">[비밀번호수정]</a>&nbsp;
- <c:if test="${loginUser.userid != 'admin' }">
+ <c:if test="${loginUser.userid != 'admin'}">
  <a href="delete?userid=${user.userid}">[회원탈퇴]</a>&nbsp;
  </c:if>
- <c:if test="${loginUser.userid == 'admin' }">
+ <c:if test="${loginUser.userid == 'admin'}">
  <a href="../admin/list">[회원목록]</a>&nbsp;
  </c:if> 
  </div></body></html>
