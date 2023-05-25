@@ -13,7 +13,7 @@ import logic.User;
 @Component
 @Aspect
 public class UserLoginAspect {
-	@Around
+@Around
 ("execution(* controller.User*.idCheck*(..)) && args(..,userid,session)")
 	public Object userIdCheck(ProceedingJoinPoint joinPoint,String userid,
 			HttpSession session) throws Throwable {
