@@ -117,4 +117,10 @@ public class ShopService {
 	public void userChgpass(String userid, String chgpass) {
 		userDao.chgpass(userid,chgpass);		
 	}
+	public List<User> userlist() {
+		return userDao.list(); //회원목록
+	}
+	public List<User> getUserList(String[] idchks) {
+		return userDao.list(idchks);
+	}
 }

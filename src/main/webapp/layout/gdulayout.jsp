@@ -16,6 +16,8 @@
 <script type="text/javascript" src= 
 "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
 </script>
+<script type="text/javascript" 
+   src="http://cdn.ckeditor.com/4.5.7/standard/ckeditor.js"></script>
 <style>
 html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 </style>
