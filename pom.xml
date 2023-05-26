@@ -125,8 +125,20 @@
   		<artifactId>sitemesh</artifactId>
   		<version>3.0.1</version>
   	</dependency>
-  </dependencies>
-  <build>
+<!-- mail 관련 설정 -->  	
+  	<dependency>
+  		<groupId>javax.mail</groupId>
+  		<artifactId>mail</artifactId>
+  		<version>1.4.7</version>
+  	</dependency>
+<!-- spring websocket을 위한 설정 -->
+	<dependency>
+	    <groupId>org.springframework</groupId>
+		<artifactId>spring-websocket</artifactId>
+        <version>${spring.version}</version>
+	</dependency>
+ </dependencies>
+ <build>
     <finalName>shop1</finalName>
     <!-- pom.xml의 첫번째 줄 오류 발생시 추가 -->
     <plugins>

@@ -24,12 +24,15 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter{
 		else if(url.contains("/board/")) url="board";
 		else if(url.contains("/item/")) url="item";
 		else if(url.contains("/cart/")) url="item";
+		else if(url.contains("/chat/")) url="chat";
 		else url="";
 		request.setAttribute("url", url);
 		super.doFilter(servletRequest, servletResponse, filterChain);
 	}
 	@Override
 	protected void applyCustomConfiguration(SiteMeshFilterBuilder builder) {
-		builder.addDecoratorPath("/*", "/layout/gdulayout.jsp");
+		builder.addDecoratorPath("/*", "/layout/gdulayout.jsp")
+		.addExcludedPath("/user/idsearch*")
+		.addExcludedPath("/user/pwsearch*");
 	}
 }

@@ -66,6 +66,10 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     class="w3-bar-item w3-button w3-padding 
     <c:if test='${url == "item"}'>w3-blue</c:if>">
     <i class="fa fa-eye fa-fw"></i>&nbsp; 상품관리</a>
+    <a href="${path}/chat/chat" 
+    class="w3-bar-item w3-button w3-padding 
+    <c:if test='${url == "chat"}'>w3-blue</c:if>">
+    <i class="fa fa-eye fa-fw"></i>&nbsp; 채팅하기</a>
     <hr>
     <a href="${path}/board/list?boardid=1" 
     class="w3-bar-item w3-button w3-padding
