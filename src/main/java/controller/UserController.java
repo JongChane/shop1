@@ -235,7 +235,7 @@ public class UserController {
 		return "redirect:mypage?userid="+loginUser.getUserid();
 	}
 	// {url}search : {url} 지정되지 않음. *search 인 요청시 호출되는 메서드
-	@PostMapping("{url}search")
+	@PostMapping("{url}search") 
 	public ModelAndView search(User user, BindingResult bresult, @PathVariable String url) {
 		//@PathVariable : {url} 의 이름을 매개변수로 전달.
 		//   요청 : idsearch : url <= "id"
