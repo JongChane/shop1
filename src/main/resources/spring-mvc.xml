@@ -47,7 +47,8 @@
 	  <!-- exception.CartEmptyException 예외 발생 => 
 	                  /WEB-INF/view/exception.jsp 로 제어 이동  -->
 	  <value>exception.CartEmptyException=exception
-	         exception.LoginException=exception</value>
+	         exception.LoginException=exception
+	         exception.BoardException=exception</value>
  	</property>
 </bean>
 <!-- message 처리 설정 : messages.properties : 기본
@@ -63,5 +64,14 @@
 <!-- websocket 관련 설정 -->
   <websocket:handlers>
       <websocket:mapping handler="echoHandler" path="/chatting"/>
-  </websocket:handlers>     
+  </websocket:handlers>
+<!-- 인터셉터 설정 -->  
+  <mvc:interceptors>
+  	<mvc:interceptor>
+  		<mvc:mapping path="/board/write"/>
+  		<mvc:mapping path="/board/update"/>
+  		<mvc:mapping path="/board/delete"/>
+  		<bean class="interceptor.BoardInterceptor" />
+  	</mvc:interceptor>
+  </mvc:interceptors>     
 </beans>

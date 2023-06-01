@@ -12,14 +12,18 @@ import javax.validation.Valid;
 import org.apache.commons.beanutils.MappedPropertyDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import exception.BoardException;
+import exception.LoginException;
 import logic.Board;
 import logic.ShopService;
 
@@ -68,7 +72,6 @@ public class BoardController {
 	 */
 	@RequestMapping("list")
 	public ModelAndView list(@RequestParam Map<String, String> param, HttpSession session) {
-		System.out.println(param);
 		Integer pageNum = null;
 		if (param.get("pageNum") != null)
 			pageNum = Integer.parseInt(param.get("pageNum"));
@@ -142,5 +145,139 @@ public class BoardController {
 		else if (board.getBoardid().equals("3"))
 			mav.addObject("boardName","QnA");
 		return mav;
+	}
+	@GetMapping({"reply","update","delete"})
+	public ModelAndView getBoard(Integer num, HttpSession session) {
+		ModelAndView mav = new ModelAndView();
+		String boardid = (String)session.getAttribute("boardid");
+		Board board = service.getBoard(num);
+		mav.addObject("board",board);
+		if(boardid == null || boardid.equals("1"))
+			mav.addObject("boardName","공지사항");
+		else if (boardid.equals("2"))
+			mav.addObject("boardName","자유게시판");
+		else if (boardid.equals("3"))
+			mav.addObject("boardName","QnA");
+		return mav;
+	}
+	/*
+	 * 1.유효성 검사하기-파라미터 값 저장.
+	 * 		-원글정보 : num,grp,grplevel,grpstep,boardid
+	 * 		-답글정보 : writer, pass, title, content
+	 * 2.db에 insert => service.boardReply()
+	 * 		- 원글의 grpstep보다 큰 이미 등록된 답글의 grpstep 값을 +1
+	 * 		  => boardDao.grpStepAdd()
+	 * 		- num : maxNum() + 1		  
+	 *		- db에 insert => boardDao.insert()
+	 *		  grp : 원글과 동일
+	 *		  grplevel : 원글의 grplevel + 1
+	 *		  grpstep  : 원글의 grpstep + 1
+	 * 3.등록 성공 : list로 페이지 이동
+	 *   등록 실패 : "답변 등록시 오류 발생" reply 페이지 이동
+	 */
+	@PostMapping("reply")
+	public ModelAndView writeReply(Integer num, @Valid Board board,BindingResult bresult) {
+		ModelAndView mav = new ModelAndView();
+		//유효성 검증
+		if(bresult.hasErrors()) {
+			Board dbboard = service.getBoard(board.getNum());
+			Map<String,Object> map = bresult.getModel();
+			Board b = (Board)map.get("board");//화면에서 입력받은 값을 저장한 Board 객체
+			b.setTitle(dbboard.getTitle());//원글의 제목으로 변경
+			mav.getModel().putAll(bresult.getModel());
+			return mav;
+		}
+		try {
+			service.boardReply(board, num);
+			mav.setViewName("redirect:list?boardid="+board.getBoardid());
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new LoginException ("답변등록시 오류 발생","reply?num="+board.getNum());
+		}	
+		return mav;
+	}
+	/*
+	 * 1. 유효성 검증.
+	 * 2. 비밀번호 검증 => 검증 오류 : 비밀번호가 틀립니다. 메세지 출력. update 페이지 이동
+	 * 3. 업로드된 파일이 있는 경우 파일 업로드. db의 내용 수정
+	 * 4. 수정 완료 : detail 페이지 이동
+	 * 	  수정 실패 : 수정실패 메세지 출력. update 페이지 이동
+	 */
+	@PostMapping("update")
+	public ModelAndView updatePost(@Valid Board board,BindingResult bresult,
+			HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		//유효성 검증
+		if(bresult.hasErrors()) {
+			mav.getModel().putAll(bresult.getModel());
+			return mav;
+		}
+		Board dbboard = service.getBoard(board.getNum());  	
+		//비밀번호 검증
+		if(!dbboard.getPass().equals(board.getPass())) {
+			throw new BoardException ("비밀번호가 틀립니다","update?num="+board.getNum());
+		}
+		//입력값 정상, 비밀번호 일치
+		try {
+			service.updatepost(board, request);
+			mav.setViewName("redirect:detail?num="+board.getNum());
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new BoardException ("게시글 수정에 실패했습니다.","update?num="+board.getNum());
+		}	
+		return mav;
+	}
+	/*
+	 * 1. num, pass 파라미터 저장
+	 * 2. 비밀번호 검증 : db에서 num게시글 조회. db에 등록된 비밀번호와 입력된 비밀번호 비교
+	 * 					비밀번호 오류 : error.board.password 코드값 설정 => delete.jsp로 전달
+	 * 3. 비밀번호 일치 : db에서 num 게시글 삭제.
+	 * 		삭제 성공 : list페이지 이동
+	 * 		삭제 실패 : delete페이지 이동
+	 */
+	@PostMapping("delete")
+	public ModelAndView deletePost(@Valid Board board, BindingResult bresult) {
+		ModelAndView mav = new ModelAndView();
+		Board dbboard = service.getBoard(board.getNum());
+		if(board.getPass()==null || board.getPass().trim().equals("")) {
+			bresult.reject("error.required.password");
+			return mav;
+		}
+		if(!dbboard.getPass().equals(board.getPass())) {
+			bresult.reject("error.board.password");
+			return mav;
+		}
+		try {
+			service.deletepost(board.getNum());
+			mav.setViewName("redirect:list?boardid="+dbboard.getBoardid());
+	    } catch(Exception e) {
+	    	e.printStackTrace();
+			bresult.reject("error.board.fail");
+			mav.setViewName("redirect:delete?num="+board.getNum());
+			return mav;
+	    }
+		return mav;
+	}
+	@RequestMapping("imgupload")
+	public String imgupload(MultipartFile upload, String CKEditorFuncNum,
+			HttpServletRequest request, Model model) {
+		/*
+		 * upload : CKEditor 모듈에서 업로드되는 이미지의 이름.
+		 * 			업로드되는 이미지파일의 내용. 이미지값
+		 * CKEditorFuncNum : CKEditor 모듈에서 파라미터로 전달되는 값. 리턴해야 되는 값
+		 * model : ModelAndView 중 Model에 해당하는 객체.
+		 * 		   뷰에 전달할 데이터 정보 저장할 객체
+		 * return 타입 String : 뷰의 이름.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+		 */
+		//업로드 되는 위치 폴더
+		//request.getServletContext().getRealPath("/") : 웹어플리케이션의 절대 경로 값.
+		String path = request.getServletContext().getRealPath("/") + "board/imgfile/";
+		service.uploadFileCreate(upload,path); //upload(파일의 내용), path(업로드되는 폴더)
+		//request.getContextPath() : 프로젝트명(웹어플리케이션 서버이름). shop1/
+		//http://localhost:8080/shop1/board/imgfile/cat.jpg
+		String fileName = request.getContextPath() //웹어플리케이션 경로. 웹 url 정보
+						+ "/board/imgfile/" + upload.getOriginalFilename();
+		model.addAttribute("fileName",fileName);
+		return "ckedit"; //view 이름. /WEB-INF/view/ckedit.jsp
 	}
 }

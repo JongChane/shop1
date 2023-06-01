@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,7 +50,7 @@ public class ShopService {
 		item.setId(maxid+1);
 		itemDao.insert(item); //db에 데이터 추가 
 	}
-	private void uploadFileCreate(MultipartFile file, String path) {
+	public void uploadFileCreate(MultipartFile file, String path) {
 		//file : 파일의 내용
 		//path : 업로드할 폴더
 		String orgFile = file.getOriginalFilename(); //파일이름
@@ -154,4 +155,29 @@ public class ShopService {
 	public List<Board> boardlist(Integer pageNum, int limit, String boardid, String searchtype, String searchcontent) {
 		return boardDao.boardlist(pageNum, limit, boardid, searchtype, searchcontent);
 	}
+	@Transactional //트랜젝션 처리. 업무를 원자화(all or nothing)
+	public void boardReply(Board board, Integer num) {
+		int maxnum = boardDao.maxNum();
+		Board b = boardDao.selectOne(num);
+		boardDao.grpStepAdd(b.getGrp(),b.getGrpstep());
+		board.setGrp(b.getGrp());
+		board.setGrplevel(b.getGrplevel()+1);
+		board.setGrpstep(b.getGrpstep()+1);
+		board.setNum(maxnum+1);
+		boardDao.insert(board);
+	}
+	public void updatepost(Board board, HttpServletRequest request) {
+		if(board.getFile1() != null && !board.getFile1().isEmpty()) {
+			String path = request.getServletContext().getRealPath("/")+"board/file/";
+			this.uploadFileCreate(board.getFile1(), path); // 파일 업로드 : board.getFile1()의 내용을 파일로 생성
+			board.setFileurl(board.getFile1().getOriginalFilename());
+		}
+		boardDao.updatepost(board);
+		
+	}
+	public void deletepost(int num) {
+		boardDao.deletepost(num);
+		
+	}
+	
 }

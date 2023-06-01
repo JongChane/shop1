@@ -65,7 +65,6 @@ public class BoardDao {
 	    param.put("boardid", boardid);
 	    return template.query(sql, param, mapper);
 	}
-
 	public Board selectOne(Integer num) {
 		param.clear();
 		String sql = select;
@@ -78,6 +77,26 @@ public class BoardDao {
 		param.put("num", num);
 		String sql = "update board set readcnt = readcnt + 1 where num=:num";
 		template.update(sql, param);
+	}
+	public void grpStepAdd(int grp, int grpstep) {
+		param.clear();
+		param.put("grp", grp); //원글의 grp
+		param.put("grpstep", grpstep); //원글의 grpstep
+		String sql = "update board set grpstep = grpstep + 1 where grp = :grp and grpstep > :grpstep ";
+		template.update(sql, param);
+	}
+	public void updatepost(Board board ) {
+		SqlParameterSource param = new BeanPropertySqlParameterSource(board);
+		String sql = "update board set writer=:writer, title=:title, content=:content, file1=:fileurl"
+				+ " where num=:num";
+		template.update(sql, param);
+	}
+	public void deletepost(int num) {
+		param.clear();
+		param.put("num", num);
+		String sql = "delete from board where num=:num";
+		template.update(sql, param);
+		
 	}
 
 }

@@ -20,7 +20,7 @@
       <td><form:input path="writer" class="w3-input"/><font color="red"><form:errors path="writer"/></font></td>
    </tr>
    <tr>
-      <th>비밀빈호</th>
+      <th>비밀번호</th>
       <td><form:password path="pass" class="w3-input"/><font color="red"><form:errors path="pass"/></font></td>
    </tr>
    <tr>
@@ -31,7 +31,7 @@
       <th>내용</th>
       <td><form:textarea path="content" rows="15" cols="80"/><font color="red"><form:errors path="content"/></font></td>
    </tr>
-   <script>CKEDITOR.replace("content",{filebrowserImageUploadUrl : "imgupload"})</script>
+   <script>CKEDITOR.replace("content",{filebrowserImageUploadUrl : "imgupload"});</script>
    <tr>
       <th>첨부파일</th>
       <td><input type="file" name="file1"></td>
